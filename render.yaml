@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: api-maquinas
+    runtime: node
+    buildCommand: ""
+    startCommand: php -S 0.0.0.0:$PORT
