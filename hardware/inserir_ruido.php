@@ -21,3 +21,4 @@ $stmt->execute([
 ]);
 
 echo json_encode(["status" => "ok", "id" => $novoId]);
+
