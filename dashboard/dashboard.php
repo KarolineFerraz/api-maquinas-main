@@ -1,6 +1,4 @@
 <?php
-echo "NOVO DASHBOARD";
-exit;
 include '../conexao.php';
 
 header('Content-Type: application/json');
