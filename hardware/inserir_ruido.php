@@ -5,28 +5,40 @@ header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit;
-}
-
 include __DIR__ . '/../conexao.php';
 
-$data = json_decode(file_get_contents("php://input"), true);
+for ($i = 1; $i <= 400; $i++) {
 
-$sqlId = "SELECT COALESCE(MAX(id), 0) + 1 AS proximo_id FROM tabela_bruta";
-$stmtId = $pdo->query($sqlId);
-$novoId = $stmtId->fetch(PDO::FETCH_ASSOC)['proximo_id'];
+    $id_maquina = rand(1, 2);
 
-$sql = "INSERT INTO tabela_bruta (id, id_maquina, valor_db, status_ligado)
-        VALUES (?, ?, ?, ?)";
+    $valor_db = rand(60, 110);
 
-$stmt = $pdo->prepare($sql);
-$stmt->execute([
-    $novoId,
-    $data['id_maquina'],
-    $data['valor_db'],
-    $data['status_ligado']
+    $status_ligado = rand(0, 1);
+
+    $dias_atras = rand(0, 30);
+
+    $data_hora = date(
+        'Y-m-d H:i:s',
+        strtotime("-$dias_atras days +" . rand(0,23) . " hours")
+    );
+
+    $sql = "
+    INSERT INTO tabela_bruta
+    (id_maquina, valor_db, status_ligado, data_hora)
+    VALUES (?, ?, ?, ?)
+    ";
+
+    $stmt = $pdo->prepare($sql);
+
+    $stmt->execute([
+        $id_maquina,
+        $valor_db,
+        $status_ligado,
+        $data_hora
+    ]);
+}
+
+echo json_encode([
+    "success" => true,
+    "message" => "400 registros mockados inseridos"
 ]);
-
-echo json_encode(["status" => "ok", "id" => $novoId]);
-
